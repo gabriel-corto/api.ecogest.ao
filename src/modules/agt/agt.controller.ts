@@ -1,34 +1,26 @@
-import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiParam, ApiResponse } from '@nestjs/swagger';
 
+import { ApiDataResponse, ApiSuccessResponse } from '@/types/api';
 import { AgtService } from './agt.service';
-import { ApiPageDataResponse, ApiSuccessResponse } from '@/types/api';
 
-import { GetSingleEntityDto } from './dtos/get-single-entity.dto';
-import { GetEntitiesDto } from '@/modules/agt/dtos/get-entities.dto';
 import { CreateEntityDto } from '@/modules/agt/dtos/create-entity.dto';
+import { GetEntitiesDto } from '@/modules/agt/dtos/get-entities.dto';
+import { GetSingleEntityDto } from './dtos/get-single-entity.dto';
 
-import { ApiPageDataResponseDto, ApiSuccessResponseDto } from '@/common/dtos/api.dto';
+import { ApiDataResponseDto, ApiSuccessResponseDto } from '@/common/dtos/api.dto';
 
 @Controller('agt')
 export class AgtController {
   constructor(private agtService: AgtService) {}
 
   @Get('/entities')
-  @ApiOkResponse({ type: ApiPageDataResponseDto(GetEntitiesDto) })
-  async getEntities(): Promise<ApiPageDataResponse> {
+  @ApiOkResponse({ type: ApiDataResponseDto(GetEntitiesDto) })
+  async getEntities(): Promise<ApiDataResponse> {
     const entities = await this.agtService.getAllEntities();
 
     return {
       data: entities,
-      metadata: {
-        page: 0,
-        limit: 5,
-        totalPages: 0,
-        totalItems: entities.length,
-        hasNextPage: false,
-        hasPreviousPage: false,
-      },
     };
   }
 
@@ -39,10 +31,6 @@ export class AgtController {
   })
   async getEntity(@Param() { nif }: GetSingleEntityDto): Promise<ApiSuccessResponse> {
     const entity = await this.agtService.getEntityByNif(nif);
-
-    if (!entity) {
-      throw new NotFoundException('Entidatde não encontrada!');
-    }
 
     return {
       data: entity,
@@ -62,7 +50,7 @@ export class AgtController {
       data: {
         ...entity,
       },
-      message: 'Entidade criada con sucesso!',
+      message: 'Entidade cadastrada com sucesso!',
     };
   }
 }

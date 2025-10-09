@@ -20,15 +20,15 @@ model Entity {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  name          String
-  nif           String         @unique
-  email         String         @unique
-  password_hash String
-  entityType    entityTypeEnum @default(SINGULAR)
+  id         String         @id @default(uuid())
+  name       String
+  nif        String         @unique
+  email      String         @unique
+  password   String
+  entityType entityTypeEnum @default(SINGULAR)
 
-  isEmailVerified    Boolean @default(false)
-  isIdentityVerified Boolean @default(false)
+  isEmailVerified    Boolean? @default(false)
+  isIdentityVerified Boolean? @default(false)
 
   otpValidation    Otp[]
   identityDocument Idoc[]

@@ -1,3 +1,5 @@
+import { User } from '@prisma/client';
+
 export interface Metadata {
   page: number;
   limit: number;
@@ -17,9 +19,20 @@ export interface ApiDataResponse {
   message?: string;
 }
 
+export type ResponseMessageType = 'AUTHENTICATED' | 'CREATED' | 'DELETED' | 'UPDATED';
+
 export interface ApiSuccessResponse {
   data: T;
   message?: string;
+}
+
+export interface ApiNoDataResponse {
+  message?: ResponseMessageType;
+}
+
+export interface ApiAuthResponse {
+  user: User;
+  token: string;
 }
 
 export type ErrorType = 'Conflict' | 'Not Found' | 'Bad Request' | 'Unauthorized' | 'Server Error';

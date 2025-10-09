@@ -33,6 +33,15 @@ export function ApiPageDataResponseDto<T>(model: Type<T>) {
   return ApiPageDataResponse;
 }
 
+export function ApiDataResponseDto<T>(model: Type<T>) {
+  class ApiDataResponse {
+    @ApiProperty({ isArray: true, type: model })
+    data: T[];
+  }
+
+  return ApiDataResponse;
+}
+
 export function ApiSuccessResponseDto<T>(model: Type<T>) {
   class ApiSuccessResponse {
     @ApiProperty({ type: model })

@@ -1,28 +1,36 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { type Response } from 'express';
+
+import { AuthService } from './auth.service';
+
+import { SignInDto } from './dtos/sign-in.dto';
+import { SignUpDto } from './dtos/sign-up.dto';
 
 @Controller('auth')
 export class AuthController {
-  //constructor(private authService: AuthSerivce) {}
+  constructor(private authService: AuthService) {}
 
   @Post('/sign-up')
-  @ApiOperation({ summary: 'user sign-up' })
-  @ApiResponse({
-    status: 201,
-    description: 'Conta cadastrada com sucesso!',
-  })
-  signUp(@Body() payload: { email: string; password: string }): string {
-    console.log(payload);
-    return '';
+  async signUp(@Body() body: SignUpDto, @Res() res: Response) {
+    const { token, user } = await this.authService.signUp(body);
+
+    this.authService.setAuthToken(res, token);
+
+    return res.json({
+      data: user,
+      message: 'AUTHORIZED',
+    });
   }
 
   @Post('/sign-in')
-  @ApiOperation({ summary: 'user sign-in' })
-  @ApiResponse({
-    status: 200,
-  })
-  signIn(@Body() payload: { email: string; password: string }): string {
-    console.log(payload);
-    return '';
+  async signIn(@Body() body: SignInDto, @Res() res: Response) {
+    const { token, user } = await this.authService.signIn(body);
+
+    this.authService.setAuthToken(res, token);
+
+    return res.json({
+      data: user,
+      message: 'AUTHORIZED',
+    });
   }
 }

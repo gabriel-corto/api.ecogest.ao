@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { Entity } from '@prisma/client';
 
 import { AgtRepository } from './agt.repository';
@@ -13,7 +13,13 @@ export class AgtService {
   }
 
   async getEntityByNif(nif: string): Promise<Entity | null> {
-    return await this.agtRepository.getEntityByNif(nif);
+    const entity = await this.agtRepository.getEntityByNif(nif);
+
+    if (!entity) {
+      throw new BadRequestException('Não existe uma entidade associada a este NIF!');
+    }
+
+    return entity;
   }
 
   async createEntity(createEntityDTO: CreateEntityDto): Promise<Entity> {
