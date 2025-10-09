@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { entityTypeEnum } from '@prisma/client';
 import { IsEnum, IsNotEmpty, Length } from 'class-validator';
 
-export class CreateEntityDTO {
+export class CreateEntityDto {
   @IsNotEmpty()
   @Length(3, 50)
   @ApiProperty()

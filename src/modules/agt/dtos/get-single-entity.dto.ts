@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class GetEntityDTO {
+export class GetSingleEntityDto {
   @IsNotEmpty()
   nif: string;
 }

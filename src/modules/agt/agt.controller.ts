@@ -1,47 +1,43 @@
-import { CreateEntityDTO } from '@/modules/agt/dtos/create-entity.dto';
+import { Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { ApiOkResponse, ApiParam, ApiResponse } from '@nestjs/swagger';
 
-import {
-  Body,
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  Post,
-} from '@nestjs/common';
-
-import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-} from '@nestjs/swagger';
-
-import { ApiDataResponse, ApiSuccessResponse } from '@/types/api';
 import { AgtService } from './agt.service';
-import { GetEntitiesDTO } from './dtos/get-entities.dto';
-import { GetEntityDTO } from './dtos/get-entity.dto';
+import { ApiPageDataResponse, ApiSuccessResponse } from '@/types/api';
+
+import { GetSingleEntityDto } from './dtos/get-single-entity.dto';
+import { GetEntitiesDto } from '@/modules/agt/dtos/get-entities.dto';
+import { CreateEntityDto } from '@/modules/agt/dtos/create-entity.dto';
+
+import { ApiPageDataResponseDto, ApiSuccessResponseDto } from '@/common/dtos/api.dto';
 
 @Controller('agt')
 export class AgtController {
   constructor(private agtService: AgtService) {}
 
   @Get('/entities')
-  @ApiOperation({ summary: 'get all agt entities' })
-  @ApiOkResponse({ type: GetEntitiesDTO, isArray: true })
-  async getEntities(): Promise<ApiDataResponse> {
+  @ApiOkResponse({ type: ApiPageDataResponseDto(GetEntitiesDto) })
+  async getEntities(): Promise<ApiPageDataResponse> {
     const entities = await this.agtService.getAllEntities();
 
     return {
-      // data: entities,
+      data: entities,
+      metadata: {
+        page: 0,
+        limit: 5,
+        totalPages: 0,
+        totalItems: entities.length,
+        hasNextPage: false,
+        hasPreviousPage: false,
+      },
     };
   }
 
   @Get('/entities/:nif')
-  @ApiOperation({ summary: 'get single agt entity' })
+  @ApiOkResponse({ type: ApiSuccessResponseDto(GetEntitiesDto) })
   @ApiParam({
     name: 'nif',
   })
-  async getEntity(@Param() { nif }: GetEntityDTO): Promise<ApiSuccessResponse> {
+  async getEntity(@Param() { nif }: GetSingleEntityDto): Promise<ApiSuccessResponse> {
     const entity = await this.agtService.getEntityByNif(nif);
 
     if (!entity) {
@@ -55,15 +51,11 @@ export class AgtController {
   }
 
   @Post('/entities')
-  @ApiOperation({ summary: 'create agt entity' })
   @ApiResponse({
     status: 201,
-    type: CreateEntityDTO,
-    description: 'Entidade criada com sucesso!',
+    type: ApiSuccessResponseDto(GetEntitiesDto),
   })
-  async createEntity(
-    @Body() data: CreateEntityDTO,
-  ): Promise<ApiSuccessResponse> {
+  async createEntity(@Body() data: CreateEntityDto): Promise<ApiSuccessResponse> {
     const entity = await this.agtService.createEntity(data);
 
     return {

@@ -1,4 +1,4 @@
-import { CreateEntityDTO } from '@/modules/agt/dtos/create-entity.dto';
+import { CreateEntityDto } from '@/modules/agt/dtos/create-entity.dto';
 import { PrismaService } from '@/services/prisma.service';
 
 import { Injectable } from '@nestjs/common';
@@ -20,7 +20,7 @@ export class AgtRepository {
     });
   }
 
-  async createEntity(createEntityDTO: CreateEntityDTO): Promise<Entity> {
+  async createEntity(createEntityDTO: CreateEntityDto): Promise<Entity> {
     const { nif, name, entityType } = createEntityDTO;
 
     return await this.prisma.entity.create({

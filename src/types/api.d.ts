@@ -1,27 +1,30 @@
-export class Metadata {
+export interface Metadata {
   page: number;
-  total: number;
+  limit: number;
+  totalPages: number;
+  totalItems: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }
 
-export class ApiDataResponse {
+export interface ApiPageDataResponse {
   data: T[];
   message?: string;
   metadata?: Metadata;
 }
+export interface ApiDataResponse {
+  data: T[];
+  message?: string;
+}
 
-export class ApiSuccessResponse {
+export interface ApiSuccessResponse {
   data: T;
   message?: string;
 }
 
-export type ErrorType =
-  | 'Conflit'
-  | 'Not Found'
-  | 'Bad Request'
-  | 'Unauthorized'
-  | 'Server Error';
+export type ErrorType = 'Conflict' | 'Not Found' | 'Bad Request' | 'Unauthorized' | 'Server Error';
 
-export class ApiErrorResponse {
+export interface ApiErrorResponse {
   message: string;
   error: ErrorType;
   statusCode: number;

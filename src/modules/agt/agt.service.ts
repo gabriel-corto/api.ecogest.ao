@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { Entity } from '@prisma/client';
 
 import { AgtRepository } from './agt.repository';
-import { CreateEntityDTO } from './dtos/create-entity.dto';
+import { CreateEntityDto } from './dtos/create-entity.dto';
 
 @Injectable()
 export class AgtService {
@@ -16,7 +16,7 @@ export class AgtService {
     return await this.agtRepository.getEntityByNif(nif);
   }
 
-  async createEntity(createEntityDTO: CreateEntityDTO): Promise<Entity> {
+  async createEntity(createEntityDTO: CreateEntityDto): Promise<Entity> {
     const entity = await this.agtRepository.getEntityByNif(createEntityDTO.nif);
 
     if (entity) {
