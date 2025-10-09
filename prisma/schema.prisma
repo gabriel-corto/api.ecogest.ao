@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Entity {
+  id         String         @id @default(uuid())
+  nif        String         @unique
+  name       String
+  entityType entityTypeEnum @default(SINGULAR)
+
+  createdAt DateTime @default(now())
+  updateAt  DateTime @default(now())
+
+  @@map("agt")
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  nif           String         @unique
+  email         String         @unique
+  password_hash String
+  entityType    entityTypeEnum @default(SINGULAR)
+
+  isEmailVerified    Boolean @default(false)
+  isIdentityVerified Boolean @default(false)
+
+  otpValidation    Otp[]
+  identityDocument Idoc[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("users")
+}
+
+model Idoc {
+  id     String             @id @default(uuid())
+  url    String
+  type   DocumentTypeEnum
+  status DocumentStatusEnum
+
+  entity   User   @relation(fields: [entityId], references: [id])
+  entityId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("idoc")
+}
+
+model Otp {
+  id              String   @id @default(uuid())
+  otp             String   @unique
+  otp_expires_at  DateTime
+  already_expired Boolean?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  @@map("otp")
+}
+
+enum entityTypeEnum {
+  COMPANY
+  SINGULAR
+}
+
+enum DocumentTypeEnum {
+  BI
+  COMERCIAL_LICENSE
+}
+
+enum DocumentStatusEnum {
+  PENDING
+  VERIFIED
+  REJECTED
+}
