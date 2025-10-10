@@ -1,19 +1,23 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
-import { Entity } from '@prisma/client';
 
-import { AgtRepository } from './agt.repository';
+import { AngolanNifDto } from '@/common/dtos/angolan-nif.dto';
+import { PrismaService } from '@/services/prisma.service';
 import { CreateEntityDto } from './dtos/create-entity.dto';
 
 @Injectable()
 export class AgtService {
-  constructor(private agtRepository: AgtRepository) {}
+  constructor(private prisma: PrismaService) {}
 
-  async getAllEntities(): Promise<Entity[]> {
-    return await this.agtRepository.getAllEntities();
+  async getAllEntities() {
+    return await this.prisma.entity.findMany();
   }
 
-  async getEntityByNif(nif: string): Promise<Entity | null> {
-    const entity = await this.agtRepository.getEntityByNif(nif);
+  async getEntityByNif({ nif }: AngolanNifDto) {
+    const entity = await this.prisma.entity.findFirst({
+      where: {
+        nif,
+      },
+    });
 
     if (!entity) {
       throw new BadRequestException('Não existe uma entidade associada a este NIF!');
@@ -22,13 +26,25 @@ export class AgtService {
     return entity;
   }
 
-  async createEntity(createEntityDTO: CreateEntityDto): Promise<Entity> {
-    const entity = await this.agtRepository.getEntityByNif(createEntityDTO.nif);
+  async createEntity(data: CreateEntityDto) {
+    const { name, nif, entityType } = data;
+
+    const entity = await this.prisma.entity.findFirst({
+      where: {
+        nif,
+      },
+    });
 
     if (entity) {
       throw new ConflictException('Já Existe uma entidade com este NIF!');
     }
 
-    return await this.agtRepository.createEntity(createEntityDTO);
+    return await this.prisma.entity.create({
+      data: {
+        name,
+        nif,
+        entityType,
+      },
+    });
   }
 }

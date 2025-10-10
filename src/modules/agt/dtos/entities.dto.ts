@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { entityTypeEnum } from '@prisma/client';
 
-export class GetEntitiesDto {
+export class EntityDto {
   @ApiProperty()
   id: string;
 

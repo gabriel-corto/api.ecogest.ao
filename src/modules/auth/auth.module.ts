@@ -1,17 +1,23 @@
-import { PrismaService } from '@/services/prisma.service';
 import { Module } from '@nestjs/common';
 
 import { AuthController } from '@/modules/auth/auth.controller';
 
-import { AgtService } from '../agt/agt.service';
 import { AuthService } from './auth.service';
 
-import { AgtRepository } from '../agt/agt.repository';
-import { UsersRepository } from '../users/users.repository';
+import { PrismaService } from '@/services/prisma.service';
+import { JwtModule } from '@nestjs/jwt';
+import { AgtService } from '../agt/agt.service';
 import { UsersService } from '../users/users.service';
 
 @Module({
+  imports: [
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
   controllers: [AuthController],
-  providers: [AuthService, AgtService, UsersService, PrismaService, AgtRepository, UsersRepository],
+  providers: [AuthService, UsersService, PrismaService, AgtService],
 })
 export class AuthModule {}

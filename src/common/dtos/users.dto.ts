@@ -4,7 +4,7 @@ import { IsEmail, IsEnum, IsNotEmpty, Length, Matches } from 'class-validator';
 import { nifRegex } from '@/common/dtos/angolan-nif.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SignUpDto {
+export class CreateUserDto {
   @IsNotEmpty()
   @Length(3, 50, {
     message: 'Nome Inválido',
@@ -35,4 +35,36 @@ export class SignUpDto {
   })
   @ApiProperty()
   password: string;
+}
+
+export class UserDto {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  name: string;
+
+  @ApiProperty()
+  nif: string;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  password: string;
+
+  @ApiProperty()
+  entityType: entityTypeEnum;
+
+  @ApiProperty()
+  isEmailVerified: boolean | null;
+
+  @ApiProperty()
+  isIdentityVerified: boolean | null;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
 }

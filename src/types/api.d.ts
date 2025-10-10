@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { UserDto } from '@/common/dtos/users.dto';
 
 export interface Metadata {
   page: number;
@@ -31,8 +31,7 @@ export interface ApiNoDataResponse {
 }
 
 export interface ApiAuthResponse {
-  user: User;
-  token: string;
+  user: UserDto;
 }
 
 export type ErrorType = 'Conflict' | 'Not Found' | 'Bad Request' | 'Unauthorized' | 'Server Error';

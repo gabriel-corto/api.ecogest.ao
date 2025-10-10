@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Type } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class MetadataDto {
   @ApiProperty()
