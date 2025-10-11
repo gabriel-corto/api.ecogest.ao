@@ -12,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@/services/prisma.service';
 import { TokenPayload } from '@/types/token';
 
+import { MailService } from '@/services/mail/mail.service';
 import * as bcrypt from 'bcrypt';
 import { addMinutes } from 'date-fns';
 import type { Response } from 'express';
@@ -21,8 +22,9 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private otpService: OtpService,
     private prisma: PrismaService,
+    private otpService: OtpService,
+    private mailService: MailService,
   ) {}
 
   private async hashPassword(password: string) {
@@ -110,13 +112,11 @@ export class AuthService {
 
     const user = await this.usersService.getUserById(userId);
 
-    const payload = {
-      code: data.otp,
-      email: user.email,
-    };
-
-    // eslint-disable-next-line no-console
-    console.log(payload);
+    await this.mailService.send({
+      content: this.mailService.otpMail({ otp: data.otp, user: user.name }),
+      subject: 'Confirme o seu e-mail',
+      to: user.email,
+    });
 
     return {
       email: user.email,

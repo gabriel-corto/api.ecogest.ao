@@ -7,6 +7,7 @@ import { AgtService } from '@/modules/agt/agt.service';
 import { UsersService } from '@/modules/users/users.service';
 import { OtpService } from '@/services/otp.service';
 
+import { MailService } from '@/services/mail/mail.service';
 import { PrismaService } from '@/services/prisma.service';
 import { AuthService } from './auth.service';
 
@@ -19,6 +20,6 @@ import { AuthService } from './auth.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, AgtService, PrismaService, OtpService],
+  providers: [AuthService, UsersService, AgtService, PrismaService, OtpService, MailService],
 })
 export class AuthModule {}
