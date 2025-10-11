@@ -30,6 +30,20 @@ export class UsersService {
     return user;
   }
 
+  async getUserById(id: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('Usuário Não Encontrado!');
+    }
+
+    return user;
+  }
+
   async getUserProfile(email: string): Promise<ProfileDto | null> {
     const user = await this.prisma.user.findFirst({
       where: {

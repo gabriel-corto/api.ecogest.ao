@@ -57,7 +57,7 @@ model Idoc {
 model Otp {
   id              String   @id @default(uuid())
   otp             String   @unique
-  otp_expires_at  DateTime
+  expires_at      DateTime
   already_expired Boolean?
 
   createdAt DateTime @default(now())

@@ -1,4 +1,6 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+
+import { type AuthRequest } from '@/types/request';
 import { type Response } from 'express';
 
 import { AuthService } from './auth.service';
@@ -42,5 +44,15 @@ export class AuthController {
       statusCode: 200,
       message: 'EXPIRED_SESSION',
     });
+  }
+
+  @Post('/generate-otp')
+  async generateOtp(@Req() req: AuthRequest) {
+    const { userId } = req.user;
+    const { email } = await this.authService.generateOtp(userId);
+
+    return {
+      message: `Código OTP Enviado para ${email}`,
+    };
   }
 }

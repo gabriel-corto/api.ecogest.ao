@@ -20,7 +20,13 @@ export interface ApiDataResponse {
   message?: string;
 }
 
-export type ResponseMessageType = 'AUTHENTICATED' | 'CREATED' | 'DELETED' | 'UPDATED';
+export type ResponseMessageType =
+  | 'AUTHENTICATED'
+  | 'CREATED'
+  | 'DELETED'
+  | 'UPDATED'
+  | 'EXPIRED_OTP'
+  | 'EXPIRED_SESSION';
 
 export interface ApiSuccessResponse {
   data: T;

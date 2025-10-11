@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 
 import { AuthController } from '@/modules/auth/auth.controller';
 
-import { AuthService } from './auth.service';
-
-import { JwtModule } from '@nestjs/jwt';
-import { UsersService } from '@/modules/users/users.service';
 import { AgtService } from '@/modules/agt/agt.service';
+import { UsersService } from '@/modules/users/users.service';
+import { OtpService } from '@/services/otp.service';
+
 import { PrismaService } from '@/services/prisma.service';
+import { AuthService } from './auth.service';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { PrismaService } from '@/services/prisma.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, AgtService, PrismaService],
+  providers: [AuthService, UsersService, AgtService, PrismaService, OtpService],
 })
 export class AuthModule {}

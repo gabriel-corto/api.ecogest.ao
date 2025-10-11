@@ -6,10 +6,13 @@ import { CreateUserDto, UserDto } from '@/common/dtos/users.dto';
 import { SignInDto } from './dtos/sign-in.dto';
 
 import { UsersService } from '@/modules/users/users.service';
+import { OtpService } from '@/services/otp.service';
 import { JwtService } from '@nestjs/jwt';
 
+import { PrismaService } from '@/services/prisma.service';
 import { TokenPayload } from '@/types/token';
 import * as bcrypt from 'bcrypt';
+import { addMinutes } from 'date-fns';
 import type { Response } from 'express';
 
 @Injectable()
@@ -17,6 +20,8 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private otpService: OtpService,
+    private prisma: PrismaService,
   ) {}
 
   private async hashPassword(password: string) {
@@ -83,5 +88,37 @@ export class AuthService {
 
   signOut(res: Response) {
     this.clearAuthToken(res);
+  }
+
+  async generateOtp(userId: string) {
+    const otp = this.otpService.generateOtp();
+    const expires_at = addMinutes(new Date(), 2);
+
+    const data = await this.prisma.otp.create({
+      data: {
+        otp,
+        expires_at,
+
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+
+    const user = await this.usersService.getUserById(userId);
+
+    const payload = {
+      code: data.otp,
+      email: user.email,
+    };
+
+    // eslint-disable-next-line no-console
+    console.log(payload);
+
+    return {
+      email: user.email,
+    };
   }
 }
