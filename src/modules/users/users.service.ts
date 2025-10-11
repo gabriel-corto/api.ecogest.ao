@@ -3,6 +3,7 @@ import { BadRequestException, ConflictException, Injectable } from '@nestjs/comm
 import { CreateUserDto } from '@/common/dtos/users.dto';
 import { PrismaService } from '@/services/prisma.service';
 import { AgtService } from '../agt/agt.service';
+import { ProfileDto } from '../profile/dtos/profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -29,18 +30,39 @@ export class UsersService {
     return user;
   }
 
-  async createUser(data: CreateUserDto) {
-    const { name, email, nif, entityType, password } = data;
+  async getUserProfile(email: string): Promise<ProfileDto | null> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email,
+      },
 
-    const userAgtEntity = await this.agt.getEntityByNif({
+      omit: {
+        id: true,
+        password: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return user;
+  }
+
+  async createUser(data: CreateUserDto) {
+    const { name, email, nif, password } = data;
+
+    const agtEntity = await this.agt.getEntityByNif({
       nif,
     });
 
-    const userAlreadyExist = await this.getUserByEmail(email);
-
-    if (!userAgtEntity) {
+    if (!agtEntity) {
       throw new BadRequestException('Não existe um registro fiscal associada a este NIF!');
     }
+
+    const userAlreadyExist = await this.prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
 
     if (userAlreadyExist) {
       throw new ConflictException('Já Existe uma conta associada a estas credencias!');
@@ -51,8 +73,11 @@ export class UsersService {
         name,
         email,
         nif,
-        entityType,
+        entityType: agtEntity.entityType,
         password,
+      },
+      omit: {
+        password: true,
       },
     });
 

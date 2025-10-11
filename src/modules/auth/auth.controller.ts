@@ -33,4 +33,14 @@ export class AuthController {
       message: 'AUTHORIZED',
     });
   }
+
+  @Post('/sign-out')
+  signOut(@Res() res: Response) {
+    this.authService.signOut(res);
+
+    return res.status(200).json({
+      statusCode: 200,
+      message: 'EXPIRED_SESSION',
+    });
+  }
 }

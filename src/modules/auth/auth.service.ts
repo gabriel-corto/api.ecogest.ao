@@ -1,14 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-
-import { UsersService } from '../users/users.service';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { ApiAuthResponse } from '@/types/api';
-import { TokenPayload } from '@/types/token';
 
 import { CreateUserDto, UserDto } from '@/common/dtos/users.dto';
 import { SignInDto } from './dtos/sign-in.dto';
 
+import { UsersService } from '@/modules/users/users.service';
 import { JwtService } from '@nestjs/jwt';
+
+import { TokenPayload } from '@/types/token';
 import * as bcrypt from 'bcrypt';
 import type { Response } from 'express';
 
@@ -46,13 +46,19 @@ export class AuthService {
     });
   }
 
+  public clearAuthToken(res: Response) {
+    res.clearCookie('authToken', {
+      maxAge: 0,
+    });
+  }
+
   async signIn(data: SignInDto): Promise<ApiAuthResponse> {
     const { email, password } = data;
     const user = await this.usersService.getUserByEmail(email);
 
     const isValidPassWord = await bcrypt.compare(password, user.password);
     if (!isValidPassWord) {
-      throw new BadRequestException('Credencias Inválidas!');
+      throw new UnauthorizedException('Credencias Inválidas!');
     }
 
     return {
@@ -61,18 +67,21 @@ export class AuthService {
   }
 
   async signUp(data: CreateUserDto): Promise<ApiAuthResponse> {
-    const { name, email, nif, entityType, password } = data;
+    const { name, email, nif, password } = data;
 
     const user = await this.usersService.createUser({
       name,
       email,
       nif,
-      entityType,
       password: await this.hashPassword(password),
     });
 
     return {
       user,
     };
+  }
+
+  signOut(res: Response) {
+    this.clearAuthToken(res);
   }
 }

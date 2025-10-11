@@ -24,6 +24,7 @@ async function bootstrap() {
   //Nestjs Cors
   app.enableCors({
     origin: process.env.CLIENT_URL,
+    credentials: true,
   });
 
   //Nestjs CookieParser

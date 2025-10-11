@@ -15,7 +15,8 @@ export interface ApiPageDataResponse {
   metadata?: Metadata;
 }
 export interface ApiDataResponse {
-  data: T[];
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  data: T[] | T;
   message?: string;
 }
 

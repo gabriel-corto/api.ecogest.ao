@@ -1,5 +1,5 @@
 import { entityTypeEnum } from '@prisma/client';
-import { IsEmail, IsEnum, IsNotEmpty, Length, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
 
 import { nifRegex } from '@/common/dtos/angolan-nif.dto';
 import { ApiProperty } from '@nestjs/swagger';
@@ -25,11 +25,6 @@ export class CreateUserDto {
   email: string;
 
   @IsNotEmpty()
-  @IsEnum(entityTypeEnum)
-  @ApiProperty({ enum: entityTypeEnum })
-  entityType: entityTypeEnum;
-
-  @IsNotEmpty()
   @Length(6, 10, {
     message: 'A Palavra passe deve ter no mínimo 6 caracteres!',
   })
@@ -49,9 +44,6 @@ export class UserDto {
 
   @ApiProperty()
   email: string;
-
-  @ApiProperty()
-  password: string;
 
   @ApiProperty()
   entityType: entityTypeEnum;

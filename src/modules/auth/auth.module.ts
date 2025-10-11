@@ -4,10 +4,10 @@ import { AuthController } from '@/modules/auth/auth.controller';
 
 import { AuthService } from './auth.service';
 
-import { PrismaService } from '@/services/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
-import { AgtService } from '../agt/agt.service';
-import { UsersService } from '../users/users.service';
+import { UsersService } from '@/modules/users/users.service';
+import { AgtService } from '@/modules/agt/agt.service';
+import { PrismaService } from '@/services/prisma.service';
 
 @Module({
   imports: [
@@ -18,6 +18,6 @@ import { UsersService } from '../users/users.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, PrismaService, AgtService],
+  providers: [AuthService, UsersService, AgtService, PrismaService],
 })
 export class AuthModule {}

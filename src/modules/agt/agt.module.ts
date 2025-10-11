@@ -5,7 +5,6 @@ import { AgtController } from './agt.controller';
 import { AgtService } from './agt.service';
 
 @Module({
-  imports: [],
   controllers: [AgtController],
   providers: [AgtService, PrismaService],
 })
