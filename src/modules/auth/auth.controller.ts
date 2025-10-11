@@ -6,7 +6,9 @@ import { type Response } from 'express';
 import { AuthService } from './auth.service';
 
 import { CreateUserDto } from '@/common/dtos/users.dto';
+import { ApiSuccessResponse } from '@/types/api';
 import { SignInDto } from './dtos/sign-in.dto';
+import { VerifyEmailDto } from './dtos/verify-email.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -53,6 +55,26 @@ export class AuthController {
 
     return {
       message: `Código OTP Enviado para ${email}`,
+    };
+  }
+
+  @Post('/verify-email')
+  async verifyUserEmail(
+    @Body() data: VerifyEmailDto,
+    @Req() req: AuthRequest,
+  ): Promise<ApiSuccessResponse> {
+    const { userId } = req.user;
+
+    const { user } = await this.authService.verifyUserEmail({
+      otp: data.otp,
+      userId,
+    });
+
+    return {
+      data: {
+        ...user,
+      },
+      message: 'Email verificado com sucesso!',
     };
   }
 }

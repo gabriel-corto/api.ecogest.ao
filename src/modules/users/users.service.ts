@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 
-import { CreateUserDto } from '@/common/dtos/users.dto';
+import { CreateUserDto, UserDto } from '@/common/dtos/users.dto';
 import { PrismaService } from '@/services/prisma.service';
 import { AgtService } from '../agt/agt.service';
 import { ProfileDto } from '../profile/dtos/profile.dto';
@@ -59,6 +59,81 @@ export class UsersService {
     });
 
     return user;
+  }
+
+  async getUserOtp(userId: string, otp: string) {
+    const data = await this.prisma.otp.findUnique({
+      where: {
+        otp,
+        AND: {
+          userId,
+        },
+      },
+    });
+
+    if (!data) {
+      throw new BadRequestException('Código OTP Não Encontrado!');
+    }
+
+    const isValidOtp = data.otp === otp;
+    if (!isValidOtp) {
+      throw new BadRequestException('Código OTP Inválido!');
+    }
+
+    const expiredOtp = new Date() > data.expires_at;
+    if (expiredOtp) {
+      throw new BadRequestException('Código OTP Expirado!');
+    }
+
+    const alreadyUsed = data.already_expired;
+    if (alreadyUsed) {
+      throw new BadRequestException('Este código OTP já foi utilizado!!');
+    }
+
+    return data;
+  }
+
+  async updateOtp(otpId: string) {
+    await this.prisma.otp.update({
+      data: {
+        already_expired: true,
+      },
+      where: {
+        id: otpId,
+      },
+    });
+  }
+
+  async verifyUserEmail(userId: string): Promise<UserDto> {
+    return await this.prisma.user.update({
+      data: {
+        isEmailVerified: true,
+      },
+      where: {
+        id: userId,
+      },
+      omit: {
+        password: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  async updateUserIdentity(userId: string): Promise<UserDto> {
+    return await this.prisma.user.update({
+      data: {
+        isIdentityVerified: true,
+      },
+      where: {
+        id: userId,
+      },
+      omit: {
+        password: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
   }
 
   async createUser(data: CreateUserDto) {

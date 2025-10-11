@@ -53,10 +53,4 @@ export class UserDto {
 
   @ApiProperty()
   isIdentityVerified: boolean | null;
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiProperty()
-  updatedAt: Date;
 }

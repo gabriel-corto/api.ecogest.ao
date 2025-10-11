@@ -11,6 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 
 import { PrismaService } from '@/services/prisma.service';
 import { TokenPayload } from '@/types/token';
+
 import * as bcrypt from 'bcrypt';
 import { addMinutes } from 'date-fns';
 import type { Response } from 'express';
@@ -119,6 +120,17 @@ export class AuthService {
 
     return {
       email: user.email,
+    };
+  }
+
+  async verifyUserEmail(data: { userId: string; otp: string }) {
+    const otp = await this.usersService.getUserOtp(data.userId, data.otp);
+    const user = await this.usersService.verifyUserEmail(data.userId);
+
+    await this.usersService.updateOtp(otp.id);
+
+    return {
+      user,
     };
   }
 }
