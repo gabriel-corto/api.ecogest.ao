@@ -1,12 +1,13 @@
-import { Body, Controller, Post, Req, Res } from '@nestjs/common';
-
 import { type AuthRequest } from '@/types/request';
+import { Body, Controller, Post, Req, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
 
+import { ApiSuccessResponse } from '@/types/api';
 import { AuthService } from './auth.service';
 
 import { CreateUserDto } from '@/common/dtos/users.dto';
-import { ApiSuccessResponse } from '@/types/api';
+import { CreateIdocDto } from '../docs/dtos/create-idoc.dto';
 import { SignInDto } from './dtos/sign-in.dto';
 import { VerifyEmailDto } from './dtos/verify-email.dto';
 
@@ -75,6 +76,33 @@ export class AuthController {
         ...user,
       },
       message: 'Email verificado com sucesso!',
+    };
+  }
+
+  @Post('/verify-identity')
+  @UseInterceptors(FileInterceptor('file'))
+  async verifyUserIdentity(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: AuthRequest,
+    @Body() body: CreateIdocDto,
+  ): Promise<ApiSuccessResponse> {
+    const { userId } = req.user;
+    const { type } = body;
+    const { originalname: url } = file;
+
+    const { user } = await this.authService.saveIdoc(
+      {
+        type,
+        url,
+      },
+      userId,
+    );
+
+    return {
+      data: {
+        ...user,
+      },
+      message: 'Documento Enviado com sucesso!',
     };
   }
 }

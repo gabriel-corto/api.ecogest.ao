@@ -9,6 +9,7 @@ import { OtpService } from '@/services/otp.service';
 
 import { MailService } from '@/services/mail/mail.service';
 import { PrismaService } from '@/services/prisma.service';
+import { DocsService } from '../docs/docs.service';
 import { AuthService } from './auth.service';
 
 @Module({
@@ -20,6 +21,14 @@ import { AuthService } from './auth.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, AgtService, PrismaService, OtpService, MailService],
+  providers: [
+    AuthService,
+    UsersService,
+    AgtService,
+    PrismaService,
+    OtpService,
+    MailService,
+    DocsService,
+  ],
 })
 export class AuthModule {}

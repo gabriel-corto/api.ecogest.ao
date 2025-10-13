@@ -3,11 +3,24 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 import { AgtModule } from '@/modules/agt/agt.module';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { UsersModule } from '@/modules/users/users.module';
+import { MulterModule } from '@nestjs/platform-express';
 import { AuthMiddleware } from './modules/auth/auth.middleware';
+import { DocsModule } from './modules/docs/docs.module';
 import { ProfileModule } from './modules/profile/profile.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, AgtModule, ProfileModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    AgtModule,
+    ProfileModule,
+    DocsModule,
+    MulterModule.registerAsync({
+      useFactory: () => ({
+        dest: './upload',
+      }),
+    }),
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

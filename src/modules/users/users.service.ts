@@ -157,7 +157,7 @@ export class UsersService {
       throw new ConflictException('Já Existe uma conta associada a estas credencias!');
     }
 
-    const user = await this.prisma.user.create({
+    return await this.prisma.user.create({
       data: {
         name,
         email,
@@ -169,7 +169,5 @@ export class UsersService {
         password: true,
       },
     });
-
-    return user;
   }
 }
