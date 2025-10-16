@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ProfileController } from './profile.controller';
 
-import { PrismaService } from '@/services/prisma.service';
+import { PrismaService } from '@/services/database/prisma.service';
 import { AgtService } from '../agt/agt.service';
 
 import { UsersService } from '../users/users.service';

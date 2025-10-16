@@ -7,7 +7,7 @@ import { ApiSuccessResponse } from '@/types/api';
 import { AuthService } from './auth.service';
 
 import { CreateUserDto } from '@/common/dtos/users.dto';
-import { CreateIdocDto } from '../docs/dtos/create-idoc.dto';
+import { CreateIdocDto } from '@/modules/docs/dtos/create-idoc.dto';
 import { SignInDto } from './dtos/sign-in.dto';
 import { VerifyEmailDto } from './dtos/verify-email.dto';
 

@@ -1,4 +1,4 @@
-import { PrismaService } from '@/services/prisma.service';
+import { PrismaService } from '@/services/database/prisma.service';
 import { Module } from '@nestjs/common';
 
 import { AgtController } from './agt.controller';

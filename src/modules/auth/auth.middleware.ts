@@ -1,8 +1,9 @@
-import { AuthRequest } from '@/types/request';
-import { TokenPayload } from '@/types/token';
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { NextFunction, Response } from 'express';
+
+import { AuthRequest } from '@/types/request';
+import { TokenPayload } from '@/types/token';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {

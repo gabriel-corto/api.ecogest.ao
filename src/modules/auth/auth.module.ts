@@ -7,8 +7,8 @@ import { AgtService } from '@/modules/agt/agt.service';
 import { UsersService } from '@/modules/users/users.service';
 import { OtpService } from '@/services/otp.service';
 
+import { PrismaService } from '@/services/database/prisma.service';
 import { MailService } from '@/services/mail/mail.service';
-import { PrismaService } from '@/services/prisma.service';
 import { DocsService } from '../docs/docs.service';
 import { AuthService } from './auth.service';
 

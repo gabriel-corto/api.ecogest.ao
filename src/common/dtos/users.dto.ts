@@ -1,5 +1,5 @@
-import { entityTypeEnum } from '@prisma/client';
-import { IsEmail, IsNotEmpty, Length, Matches } from 'class-validator';
+import { entityTypeEnum, Role } from '@prisma/client';
+import { IsEmail, IsEnum, IsNotEmpty, Length, Matches } from 'class-validator';
 
 import { nifRegex } from '@/common/dtos/angolan-nif.dto';
 import { ApiProperty } from '@nestjs/swagger';
@@ -23,6 +23,9 @@ export class CreateUserDto {
   @IsEmail()
   @ApiProperty()
   email: string;
+
+  @IsEnum(Role)
+  role: Role;
 
   @IsNotEmpty()
   @Length(6, 10, {
@@ -53,4 +56,10 @@ export class UserDto {
 
   @ApiProperty()
   isIdentityVerified: boolean | null;
+
+  @ApiProperty({
+    example: Role,
+    enum: Role,
+  })
+  role: Role;
 }

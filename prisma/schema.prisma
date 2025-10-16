@@ -27,8 +27,10 @@ model User {
   password   String
   entityType entityTypeEnum @default(SINGULAR)
 
-  isEmailVerified    Boolean? @default(false)
-  isIdentityVerified Boolean? @default(false)
+  isEmailVerified    Boolean?   @default(false)
+  isIdentityVerified Boolean?   @default(false)
+  role               Role       @default(COMPANY)
+  status             StatusEnum @default(PENDING)
 
   otpValidation    Otp[]
   identityDocument Idoc[]
@@ -83,4 +85,18 @@ enum DocumentStatusEnum {
   PENDING
   VERIFIED
   REJECTED
+}
+
+enum Role {
+  AGT
+  ADMIN
+  COMPANY
+  GOVERNMENT
+}
+
+enum StatusEnum {
+  APPROVED
+  PENDING
+  REJECTED
+  CANCELLED
 }

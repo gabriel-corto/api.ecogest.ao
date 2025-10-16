@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 
 import { ApiAuthResponse } from '@/types/api';
 
@@ -9,7 +9,7 @@ import { UsersService } from '@/modules/users/users.service';
 import { OtpService } from '@/services/otp.service';
 import { JwtService } from '@nestjs/jwt';
 
-import { PrismaService } from '@/services/prisma.service';
+import { PrismaService } from '@/services/database/prisma.service';
 import { TokenPayload } from '@/types/token';
 
 import { DocsService } from '@/modules/docs/docs.service';
@@ -68,6 +68,7 @@ export class AuthService {
     const user = await this.usersService.getUserByEmail(email);
 
     const isValidPassWord = await bcrypt.compare(password, user.password);
+
     if (!isValidPassWord) {
       throw new UnauthorizedException('Credencias Inválidas!');
     }
@@ -78,12 +79,13 @@ export class AuthService {
   }
 
   async signUp(data: CreateUserDto): Promise<ApiAuthResponse> {
-    const { name, email, nif, password } = data;
+    const { name, email, nif, password, role } = data;
 
     const user = await this.usersService.createUser({
       name,
       email,
       nif,
+      role,
       password: await this.hashPassword(password),
     });
 
@@ -121,11 +123,15 @@ export class AuthService {
       otp: data.otp,
     });
 
-    await this.mailService.send({
-      content: this.mailService.otpMail({ otp: data.otp, user: user.name }),
-      subject: 'Confirme o seu e-mail',
-      to: user.email,
-    });
+    try {
+      await this.mailService.send({
+        content: this.mailService.otpMail({ otp: data.otp, user: user.name }),
+        subject: 'Confirme o seu e-mail',
+        to: user.email,
+      });
+    } catch {
+      throw new InternalServerErrorException('Erro ao enviar e-mail!');
+    }
 
     return {
       email: user.email,

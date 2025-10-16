@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 
 import { CreateUserDto, UserDto } from '@/common/dtos/users.dto';
-import { PrismaService } from '@/services/prisma.service';
+import { PrismaService } from '@/services/database/prisma.service';
 import { AgtService } from '../agt/agt.service';
 import { ProfileDto } from '../profile/dtos/profile.dto';
 
@@ -13,7 +13,13 @@ export class UsersService {
   ) {}
 
   async getAllUsers() {
-    return await this.prisma.user.findMany();
+    return await this.prisma.user.findMany({
+      omit: {
+        password: true,
+        updatedAt: true,
+        createdAt: true,
+      },
+    });
   }
 
   async getUserByEmail(email: string) {
@@ -137,13 +143,13 @@ export class UsersService {
   }
 
   async createUser(data: CreateUserDto) {
-    const { name, email, nif, password } = data;
+    const { name, email, nif, password, role } = data;
 
     const agtEntity = await this.agt.getEntityByNif({
       nif,
     });
 
-    if (!agtEntity) {
+    if (!agtEntity && role !== 'ADMIN') {
       throw new BadRequestException('Não existe um registro fiscal associada a este NIF!');
     }
 
@@ -162,6 +168,7 @@ export class UsersService {
         name,
         email,
         nif,
+        role: role ? role : 'COMPANY',
         entityType: agtEntity.entityType,
         password,
       },

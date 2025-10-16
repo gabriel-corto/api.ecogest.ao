@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 
 import { AngolanNifDto } from '@/common/dtos/angolan-nif.dto';
-import { PrismaService } from '@/services/prisma.service';
+import { PrismaService } from '@/services/database/prisma.service';
 import { CreateEntityDto } from './dtos/create-entity.dto';
 
 @Injectable()

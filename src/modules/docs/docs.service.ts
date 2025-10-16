@@ -1,4 +1,4 @@
-import { PrismaService } from '@/services/prisma.service';
+import { PrismaService } from '@/services/database/prisma.service';
 import { Injectable } from '@nestjs/common';
 
 import { CreateIdocDto } from './dtos/create-idoc.dto';
