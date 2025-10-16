@@ -24,24 +24,6 @@ export class UsersService {
     });
   }
 
-  async getAllIdentifications() {
-    return await this.prisma.user.findMany({
-      omit: {
-        password: true,
-        updatedAt: true,
-        createdAt: true,
-        idocId: true,
-        otpId: true,
-      },
-      include: {
-        idoc: true,
-      },
-      where: {
-        role: 'COMPANY',
-      },
-    });
-  }
-
   async getUserByEmail(email: string) {
     const user = await this.prisma.user.findFirst({
       where: {
@@ -165,33 +147,6 @@ export class UsersService {
     });
   }
 
-  async approveIdentification(id: string) {
-    const data = await this.prisma.user.update({
-      data: {
-        status: 'VERIFIED',
-      },
-      where: {
-        id,
-      },
-    });
-
-    return data;
-  }
-
-  async rejectIdentification(id: string) {
-    const data = await this.prisma.user.update({
-      data: {
-        status: 'REJECTED',
-        //isIdentityVerified: false,
-      },
-      where: {
-        id,
-      },
-    });
-
-    return data;
-  }
-
   async createUser(data: CreateUserDto) {
     const { name, email, nif, password, role } = data;
 
@@ -226,5 +181,117 @@ export class UsersService {
         password: true,
       },
     });
+  }
+
+  //IDENTIFICATIONS
+  async getAllIdentifications(q?: string) {
+    return await this.prisma.user.findMany({
+      omit: {
+        password: true,
+        updatedAt: true,
+        idocId: true,
+        otpId: true,
+      },
+      include: {
+        idoc: true,
+      },
+      where: {
+        role: 'COMPANY',
+        AND: {
+          name: {
+            contains: q,
+          },
+        },
+      },
+    });
+  }
+
+  async getAllGovernmentEntities() {
+    return await this.prisma.user.findMany({
+      omit: {
+        password: true,
+        updatedAt: true,
+        idocId: true,
+        otpId: true,
+        status: true,
+        isEmailVerified: true,
+        isIdentityVerified: true,
+      },
+      where: {
+        role: {
+          not: 'COMPANY',
+        },
+      },
+    });
+  }
+
+  async approveIdentification(id: string) {
+    const data = await this.prisma.user.update({
+      data: {
+        status: 'VERIFIED',
+      },
+      where: {
+        id,
+      },
+    });
+
+    return data;
+  }
+
+  async rejectIdentification(id: string) {
+    const data = await this.prisma.user.update({
+      data: {
+        status: 'REJECTED',
+      },
+      where: {
+        id,
+      },
+    });
+
+    return data;
+  }
+
+  async getIdentificationMetrics() {
+    const [all, pendings, approveds, rejecteds] = await Promise.all([
+      this.prisma.user.count({
+        where: {
+          role: 'COMPANY',
+        },
+      }),
+
+      this.prisma.user.count({
+        where: {
+          status: 'PENDING',
+          AND: {
+            role: 'COMPANY',
+          },
+        },
+      }),
+
+      this.prisma.user.count({
+        where: {
+          status: 'VERIFIED',
+          AND: {
+            role: 'COMPANY',
+          },
+        },
+      }),
+
+      this.prisma.user.count({
+        where: {
+          status: 'REJECTED',
+          AND: {
+            role: 'COMPANY',
+          },
+        },
+      }),
+    ]);
+
+    return {
+      all,
+      pendings,
+      approveds,
+      rejecteds,
+    };
   }
 }

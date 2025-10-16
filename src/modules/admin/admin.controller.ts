@@ -1,9 +1,10 @@
 import { ApiPageDataResponseDto, ApiSuccessResponseDto } from '@/common/dtos/api.dto';
 import { IdentificationDto, ParamDto } from '@/common/dtos/users.dto';
-import { ApiPageDataResponse, ApiSuccessResponse } from '@/types/api';
-import { Controller, Get, Param, Patch } from '@nestjs/common';
+import { ApiDataResponse, ApiPageDataResponse, ApiSuccessResponse } from '@/types/api';
+import { Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { ApiParam, ApiResponse } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
+import { GovernmentEntityDto, MetricsDto } from './dtos/identifications.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -11,8 +12,8 @@ export class AdminController {
 
   @Get('/identifications')
   @ApiResponse({ status: 200, type: ApiPageDataResponseDto(IdentificationDto) })
-  async getAllIdentifications(): Promise<ApiPageDataResponse> {
-    const identifications = await this.admin.getIdentifications();
+  async getAllIdentifications(@Query() { q }: { q?: string }): Promise<ApiPageDataResponse> {
+    const identifications = await this.admin.getIdentifications(q);
     return {
       data: identifications,
       metadata: {
@@ -22,6 +23,29 @@ export class AdminController {
         page: 0,
         totalItems: 0,
         totalPages: 0,
+      },
+    };
+  }
+
+  @Get('/government-entities')
+  @ApiResponse({ status: 200, type: ApiPageDataResponseDto(GovernmentEntityDto) })
+  async getGovernmentEntities(): Promise<ApiDataResponse> {
+    const entities = await this.admin.getGovernmentEntities();
+    return {
+      data: entities,
+    };
+  }
+
+  @Get('/identifications/metrics')
+  @ApiResponse({ status: 200, type: ApiSuccessResponseDto(MetricsDto) })
+  async getAllIdentificationsMetrics(): Promise<ApiSuccessResponse> {
+    const { all, pendings, approveds, rejecteds } = await this.admin.getAllIdentificationsMetrics();
+    return {
+      data: {
+        all: all,
+        pendings: pendings,
+        approveds: approveds,
+        rejecteds: rejecteds,
       },
     };
   }

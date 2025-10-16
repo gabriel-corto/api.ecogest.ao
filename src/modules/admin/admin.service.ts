@@ -5,8 +5,15 @@ import { Injectable } from '@nestjs/common';
 export class AdminService {
   constructor(private userService: UsersService) {}
 
-  async getIdentifications() {
-    return this.userService.getAllIdentifications();
+  async getIdentifications(q?: string) {
+    return this.userService.getAllIdentifications(q);
+  }
+  async getGovernmentEntities(q?: string) {
+    return this.userService.getAllGovernmentEntities();
+  }
+
+  async getAllIdentificationsMetrics() {
+    return this.userService.getIdentificationMetrics();
   }
 
   async approveIdentification(id: string) {
