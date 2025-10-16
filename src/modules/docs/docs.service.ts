@@ -15,7 +15,7 @@ export class DocsService {
         status: 'PENDING',
         url,
         type,
-        entity: {
+        user: {
           connect: {
             id: userId,
           },

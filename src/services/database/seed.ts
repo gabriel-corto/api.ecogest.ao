@@ -88,31 +88,31 @@ async function main() {
     },
   });
 
-  //await sleep(800);
+  await sleep(800);
 
-  // console.log('⏳ Criando entidades empresariais...');
-  // await sleep(500);
+  console.log('⏳ Criando entidades empresariais...');
+  await sleep(500);
 
-  // await prisma.user.createMany({
-  //   data: [
-  //     {
-  //       nif: '5000123456',
-  //       role: 'COMPANY',
-  //       name: 'Explora Diamantes, LDA',
-  //       email: 'exploradiamantes@gmail.com',
-  //       password: '123456',
-  //       entityType: 'COMPANY',
-  //     },
-  //     {
-  //       nif: '5000654321',
-  //       role: 'COMPANY',
-  //       name: 'ANGLOBAL - COM. INDÚSTRIA E SERVIÇOS, S.A',
-  //       email: 'anglobal@gmail.com',
-  //       password: '654321',
-  //       entityType: 'COMPANY',
-  //     },
-  //   ],
-  // });
+  await prisma.user.createMany({
+    data: [
+      {
+        nif: '5000123456',
+        role: 'COMPANY',
+        name: 'Explora Diamantes, LDA',
+        email: 'exploradiamantes@gmail.com',
+        password: '123456',
+        entityType: 'COMPANY',
+      },
+      {
+        nif: '5000654321',
+        role: 'COMPANY',
+        name: 'ANGLOBAL - COM. INDÚSTRIA E SERVIÇOS, S.A',
+        email: 'anglobal@gmail.com',
+        password: '654321',
+        entityType: 'COMPANY',
+      },
+    ],
+  });
 
   console.log('🎉 Seed finalizado com sucesso!\n');
 }

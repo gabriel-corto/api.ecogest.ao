@@ -18,6 +18,26 @@ export class UsersService {
         password: true,
         updatedAt: true,
         createdAt: true,
+        idocId: true,
+        otpId: true,
+      },
+    });
+  }
+
+  async getAllIdentifications() {
+    return await this.prisma.user.findMany({
+      omit: {
+        password: true,
+        updatedAt: true,
+        createdAt: true,
+        idocId: true,
+        otpId: true,
+      },
+      include: {
+        idoc: true,
+      },
+      where: {
+        role: 'COMPANY',
       },
     });
   }
@@ -72,7 +92,9 @@ export class UsersService {
       where: {
         otp,
         AND: {
-          userId,
+          user: {
+            id: userId,
+          },
         },
       },
     });
@@ -130,6 +152,7 @@ export class UsersService {
     return await this.prisma.user.update({
       data: {
         isIdentityVerified: true,
+        status: 'PENDING',
       },
       where: {
         id: userId,
@@ -140,6 +163,33 @@ export class UsersService {
         updatedAt: true,
       },
     });
+  }
+
+  async approveIdentification(id: string) {
+    const data = await this.prisma.user.update({
+      data: {
+        status: 'VERIFIED',
+      },
+      where: {
+        id,
+      },
+    });
+
+    return data;
+  }
+
+  async rejectIdentification(id: string) {
+    const data = await this.prisma.user.update({
+      data: {
+        status: 'REJECTED',
+        //isIdentityVerified: false,
+      },
+      where: {
+        id,
+      },
+    });
+
+    return data;
   }
 
   async createUser(data: CreateUserDto) {
