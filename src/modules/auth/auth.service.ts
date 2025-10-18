@@ -6,7 +6,6 @@ import { CreateUserDto, UserDto } from '@/common/dtos/users.dto';
 import { SignInDto } from './dtos/sign-in.dto';
 
 import { UsersService } from '@/modules/users/users.service';
-import { OtpService } from '@/services/otp.service';
 import { JwtService } from '@nestjs/jwt';
 
 import { PrismaService } from '@/services/database/prisma.service';
@@ -14,6 +13,8 @@ import { TokenPayload } from '@/types/token';
 
 import { DocsService } from '@/modules/docs/docs.service';
 import { MailService } from '@/services/mail/mail.service';
+import { generateOtpMailTemplate } from '@/services/mail/templates/otp.mail';
+import { generateOtp } from '@/utils/generate-otp';
 import * as bcrypt from 'bcrypt';
 import { addMinutes } from 'date-fns';
 import type { Response } from 'express';
@@ -25,7 +26,6 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private prisma: PrismaService,
-    private otpService: OtpService,
     private mailService: MailService,
     private docs: DocsService,
   ) {}
@@ -65,7 +65,7 @@ export class AuthService {
 
   async signIn(data: SignInDto): Promise<ApiAuthResponse> {
     const { email, password } = data;
-    const user = await this.usersService.getUserByEmail(email);
+    const user = await this.usersService.findUserByEmail(email);
 
     const isValidPassWord = await bcrypt.compare(password, user.password);
 
@@ -99,7 +99,7 @@ export class AuthService {
   }
 
   async generateOtp(userId: string) {
-    const otp = this.otpService.generateOtp();
+    const otp = generateOtp();
     const expires_at = addMinutes(new Date(), 2);
 
     const data = await this.prisma.otp.create({
@@ -115,7 +115,7 @@ export class AuthService {
       },
     });
 
-    const user = await this.usersService.getUserById(userId);
+    const user = await this.usersService.findUserId(userId);
 
     // eslint-disable-next-line no-console
     console.log({
@@ -125,12 +125,15 @@ export class AuthService {
 
     try {
       await this.mailService.send({
-        content: this.mailService.otpMail({ otp: data.otp, user: user.name }),
+        content: generateOtpMailTemplate({
+          otp: data.otp,
+          user: user.name,
+        }),
         subject: 'Confirme o seu e-mail',
         to: user.email,
       });
     } catch {
-      throw new InternalServerErrorException('Erro ao enviar e-mail!');
+      throw new InternalServerErrorException('Serviço de e-mail indisponível!');
     }
 
     return {
@@ -139,10 +142,10 @@ export class AuthService {
   }
 
   async verifyUserEmail(data: { userId: string; otp: string }) {
-    const otp = await this.usersService.getUserOtp(data.userId, data.otp);
+    const otp = await this.usersService.findUserOtp(data.userId, data.otp);
     const user = await this.usersService.verifyUserEmail(data.userId);
 
-    await this.usersService.updateOtp(otp.id);
+    await this.usersService.updateUserOtp(otp.id);
 
     return {
       user,

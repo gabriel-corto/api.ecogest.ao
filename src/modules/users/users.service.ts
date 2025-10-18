@@ -1,9 +1,9 @@
 import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 
 import { CreateUserDto, UserDto } from '@/common/dtos/users.dto';
+import { ProfileDto } from '@/modules/profile/dtos/profile.dto';
 import { PrismaService } from '@/services/database/prisma.service';
 import { AgtService } from '../agt/agt.service';
-import { ProfileDto } from '../profile/dtos/profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +12,7 @@ export class UsersService {
     private agt: AgtService,
   ) {}
 
-  async getAllUsers() {
+  async findAllUsers() {
     return await this.prisma.user.findMany({
       omit: {
         password: true,
@@ -24,7 +24,7 @@ export class UsersService {
     });
   }
 
-  async getUserByEmail(email: string) {
+  async findUserByEmail(email: string) {
     const user = await this.prisma.user.findFirst({
       where: {
         email,
@@ -38,7 +38,7 @@ export class UsersService {
     return user;
   }
 
-  async getUserById(id: string) {
+  async findUserId(id: string) {
     const user = await this.prisma.user.findFirst({
       where: {
         id,
@@ -69,7 +69,7 @@ export class UsersService {
     return user;
   }
 
-  async getUserOtp(userId: string, otp: string) {
+  async findUserOtp(userId: string, otp: string) {
     const data = await this.prisma.otp.findUnique({
       where: {
         otp,
@@ -103,7 +103,7 @@ export class UsersService {
     return data;
   }
 
-  async updateOtp(otpId: string) {
+  async updateUserOtp(otpId: string) {
     await this.prisma.otp.update({
       data: {
         already_expired: true,
@@ -184,7 +184,7 @@ export class UsersService {
   }
 
   //IDENTIFICATIONS
-  async getAllIdentifications(q?: string) {
+  async findAllIdentifications(q?: string) {
     return await this.prisma.user.findMany({
       omit: {
         password: true,
@@ -206,7 +206,7 @@ export class UsersService {
     });
   }
 
-  async getAllGovernmentEntities() {
+  async findAllGovernmentsEntities() {
     return await this.prisma.user.findMany({
       omit: {
         password: true,

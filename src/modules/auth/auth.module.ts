@@ -5,10 +5,10 @@ import { AuthController } from '@/modules/auth/auth.controller';
 
 import { AgtService } from '@/modules/agt/agt.service';
 import { UsersService } from '@/modules/users/users.service';
-import { OtpService } from '@/services/otp.service';
 
 import { PrismaService } from '@/services/database/prisma.service';
 import { MailService } from '@/services/mail/mail.service';
+import { NodemailerService } from '@/services/mail/providers/nodemailer.service';
 import { DocsService } from '../docs/docs.service';
 import { AuthService } from './auth.service';
 
@@ -26,8 +26,10 @@ import { AuthService } from './auth.service';
     UsersService,
     AgtService,
     PrismaService,
-    OtpService,
-    MailService,
+    {
+      provide: MailService,
+      useClass: NodemailerService,
+    },
     DocsService,
   ],
 })

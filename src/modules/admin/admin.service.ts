@@ -8,7 +8,7 @@ export class AdminService {
   async getIdentifications(q?: string) {
     return this.userService.getAllIdentifications(q);
   }
-  async getGovernmentEntities(q?: string) {
+  async getGovernmentEntities() {
     return this.userService.getAllGovernmentEntities();
   }
 
