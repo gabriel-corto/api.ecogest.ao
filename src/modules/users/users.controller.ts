@@ -12,7 +12,7 @@ export class UsersController {
   @Get('/')
   @ApiResponse({ status: 200, type: ApiPageDataResponseDto(UserDto) })
   async getAllUsers(): Promise<ApiPageDataResponse> {
-    const users = await this.usersService.getAllUsers();
+    const users = await this.usersService.findAllUsers();
     return {
       data: users,
       metadata: {

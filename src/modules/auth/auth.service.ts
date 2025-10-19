@@ -153,7 +153,7 @@ export class AuthService {
   }
 
   async saveIdoc(data: CreateIdocDto, userId: string) {
-    await this.docs.saveIdoc(data, userId);
+    await this.docs.save(data, userId);
     const user = await this.usersService.updateUserIdentity(userId);
 
     return {

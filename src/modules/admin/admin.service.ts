@@ -6,10 +6,10 @@ export class AdminService {
   constructor(private userService: UsersService) {}
 
   async getIdentifications(q?: string) {
-    return this.userService.getAllIdentifications(q);
+    return this.userService.findAllIdentifications(q);
   }
   async getGovernmentEntities() {
-    return this.userService.getAllGovernmentEntities();
+    return this.userService.findAllGovernmentsEntities();
   }
 
   async getAllIdentificationsMetrics() {
