@@ -86,17 +86,15 @@ export class AuthController {
     @Req() req: AuthRequest,
     @Body() body: CreateIdocDto,
   ): Promise<ApiSuccessResponse> {
-    const { userId } = req.user;
     const { type } = body;
+    const { userId } = req.user;
     const { originalname: url } = file;
 
-    const { user } = await this.authService.saveIdoc(
-      {
-        type,
-        url,
-      },
+    const { user } = await this.authService.saveIdoc({
+      type,
+      url,
       userId,
-    );
+    });
 
     return {
       data: {

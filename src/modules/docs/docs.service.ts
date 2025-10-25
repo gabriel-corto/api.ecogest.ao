@@ -7,8 +7,8 @@ import { CreateIdocDto } from './dtos/create-idoc.dto';
 export class DocsService {
   constructor(private prisma: PrismaService) {}
 
-  async save(data: CreateIdocDto, userId: string) {
-    const { type, url } = data;
+  async save(data: CreateIdocDto) {
+    const { type, url, userId } = data;
 
     return await this.prisma.idoc.create({
       data: {

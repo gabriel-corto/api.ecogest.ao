@@ -1,24 +1,23 @@
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
-
 import { ApiAuthResponse } from '@/types/api';
-
-import { CreateUserDto, UserDto } from '@/common/dtos/users.dto';
-import { SignInDto } from './dtos/sign-in.dto';
-
-import { UsersService } from '@/modules/users/users.service';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { PrismaService } from '@/services/database/prisma.service';
+import { CreateUserDto, UserDto } from '@/common/dtos/users.dto';
 import { TokenPayload } from '@/types/token';
+import { generateOtp } from '@/utils/generate-otp';
+import { SignInDto } from './dtos/sign-in.dto';
 
 import { DocsService } from '@/modules/docs/docs.service';
+import { CreateIdocDto } from '@/modules/docs/dtos/create-idoc.dto';
+import { UsersService } from '@/modules/users/users.service';
+
+import { PrismaService } from '@/services/database/prisma.service';
 import { MailService } from '@/services/mail/mail.service';
 import { generateOtpMailTemplate } from '@/services/mail/templates/otp.mail';
-import { generateOtp } from '@/utils/generate-otp';
+
 import * as bcrypt from 'bcrypt';
 import { addMinutes } from 'date-fns';
 import type { Response } from 'express';
-import { CreateIdocDto } from '../docs/dtos/create-idoc.dto';
 
 @Injectable()
 export class AuthService {
@@ -152,8 +151,9 @@ export class AuthService {
     };
   }
 
-  async saveIdoc(data: CreateIdocDto, userId: string) {
-    await this.docs.save(data, userId);
+  async saveIdoc(data: CreateIdocDto) {
+    const { userId } = data;
+    await this.docs.save(data);
     const user = await this.usersService.updateUserIdentity(userId);
 
     return {

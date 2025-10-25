@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ProfileController } from './profile.controller';
 
+import { AgtService } from '@/modules/agt/agt.service';
 import { PrismaService } from '@/services/database/prisma.service';
-import { AgtService } from '../agt/agt.service';
 
-import { UsersService } from '../users/users.service';
+import { UsersService } from '@/modules/users/users.service';
 import { ProfileService } from './profile.service';
 
 @Module({

@@ -11,9 +11,9 @@ function sleep(ms: number) {
 }
 
 async function main() {
-  console.log('\n🌱 Iniciando processo de seed do EcoGest...\n');
+  console.log('\nIniciando processo de seed do EcoGest...\n');
 
-  // console.log('⏳ Cadastrando entidades AGTs...');
+  // console.log('Cadastrando entidades AGTs...');
   // await sleep(500);
 
   // const entities = await prisma.entity.createMany({
@@ -31,10 +31,10 @@ async function main() {
   //   ],
   // });
 
-  // console.log('✅ Entidades AGTs cadastradas com sucesso!\n');
+  // console.log('Entidades AGTs cadastradas com sucesso!\n');
   // await sleep(800);
 
-  console.log('⏳ Criando usuário administrador...');
+  console.log('Criando usuário administrador...');
   await sleep(1000);
 
   await prisma.user.upsert({
@@ -52,7 +52,7 @@ async function main() {
     },
   });
 
-  console.log('⏳ Criando usuário MINISTÉRIO DO AMBIENTE...');
+  console.log('Criando usuário MINISTÉRIO DO AMBIENTE...');
   await sleep(1000);
 
   await prisma.user.upsert({
@@ -70,7 +70,7 @@ async function main() {
     },
   });
 
-  console.log('⏳ Criando usuário AGT...');
+  console.log('Criando usuário AGT...');
   await sleep(1000);
 
   await prisma.user.upsert({
@@ -90,7 +90,7 @@ async function main() {
 
   await sleep(800);
 
-  console.log('⏳ Criando entidades empresariais...');
+  console.log('Criando entidades empresariais...');
   await sleep(500);
 
   await prisma.user.createMany({
@@ -114,15 +114,15 @@ async function main() {
     ],
   });
 
-  console.log('🎉 Seed finalizado com sucesso!\n');
+  console.log(' Seed finalizado com sucesso!\n');
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Erro ao executar o seed:\n', e);
+    console.error(' Erro ao executar o seed:\n', e);
     process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
-    console.log('🔌 Conexão com o banco de dados encerrada.\n');
+    console.log('Conexão com o banco de dados encerrada.\n');
   });

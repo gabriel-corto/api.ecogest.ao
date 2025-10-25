@@ -1,5 +1,5 @@
 import { DocumentTypeEnum } from '@prisma/client';
-import { IsEmpty, IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEmpty, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateIdocDto {
   @IsEmpty()
@@ -8,4 +8,9 @@ export class CreateIdocDto {
   @IsNotEmpty()
   @IsEnum(DocumentTypeEnum)
   type: DocumentTypeEnum;
+
+  @IsOptional()
+  @IsString()
+  @IsUUID()
+  userId: string;
 }

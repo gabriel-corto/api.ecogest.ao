@@ -1,5 +1,5 @@
+import { UsersService } from '@/modules/users/users.service';
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 
 import { ProfileDto } from './dtos/profile.dto';
 
