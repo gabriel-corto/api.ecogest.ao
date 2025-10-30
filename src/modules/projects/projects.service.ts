@@ -8,11 +8,11 @@ export class ProjectsService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateProjectDto, userId: string) {
-    const { locale, name, sector, slug } = data;
+    const { locale, name, sector } = data;
 
     const project = await this.prisma.project.findFirst({
       where: {
-        slug,
+        name,
       },
     });
 
@@ -25,14 +25,16 @@ export class ProjectsService {
         locale,
         name,
         sector,
-        slug,
+        slug: crypto.randomUUID(),
         userId,
       },
     });
   }
 
   async findAll() {
-    return await this.prisma.project.findMany();
+    const data = await this.prisma.project.findMany();
+
+    return data;
   }
 
   async findById(id: string) {

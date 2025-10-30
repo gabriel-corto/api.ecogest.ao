@@ -9,8 +9,5 @@ export class CreateProjectDto {
   sector: SectorEnum;
 
   @IsNotEmpty()
-  slug: string;
-
-  @IsNotEmpty()
   locale: string;
 }
