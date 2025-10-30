@@ -63,6 +63,8 @@ export class UsersService {
         password: true,
         createdAt: true,
         updatedAt: true,
+        idocId: true,
+        otpId: true,
       },
     });
 

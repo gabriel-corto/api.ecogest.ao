@@ -10,6 +10,7 @@ import { DocsModule } from '@/modules/docs/docs.module';
 import { ProfileModule } from '@/modules/profile/profile.module';
 import { UsersModule } from '@/modules/users/users.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { MulterModule } from '@nestjs/platform-express';
     ProfileModule,
     DocsModule,
     AdminModule,
+    ProjectsModule,
     MulterModule.registerAsync({
       useFactory: () => ({
         dest: './upload',
