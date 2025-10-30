@@ -38,6 +38,8 @@ model User {
   otp   Otp?    @relation(fields: [otpId], references: [id])
   otpId String? @unique
 
+  projects Project[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
@@ -80,6 +82,9 @@ model Project {
   locale    String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @default(now())
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
 }
 
 enum entityTypeEnum {

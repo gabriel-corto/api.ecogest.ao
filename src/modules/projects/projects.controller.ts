@@ -1,6 +1,7 @@
 import { ApiDataResponse, ApiNoDataResponse, ApiPageDataResponse } from '@/types/api';
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 
+import { type AuthRequest } from '@/types/request';
 import { CreateProjectDto } from './dtos/create-project.dto';
 import { DeleteProjectDto } from './dtos/delete-project.dto';
 import { GetProjectDto } from './dtos/get-project.dto';
@@ -11,8 +12,9 @@ export class ProjectsController {
   constructor(private projectsService: ProjectsService) {}
 
   @Post()
-  async create(@Body() body: CreateProjectDto): Promise<ApiDataResponse> {
-    const data = await this.projectsService.create(body);
+  async create(@Req() req: AuthRequest, @Body() body: CreateProjectDto): Promise<ApiDataResponse> {
+    const userId = req.user.userId;
+    const data = await this.projectsService.create(body, userId);
 
     return {
       data,

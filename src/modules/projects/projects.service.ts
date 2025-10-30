@@ -7,7 +7,7 @@ import { CreateProjectDto } from './dtos/create-project.dto';
 export class ProjectsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateProjectDto) {
+  async create(data: CreateProjectDto, userId: string) {
     const { locale, name, sector, slug } = data;
 
     const project = await this.prisma.project.findFirst({
@@ -26,6 +26,7 @@ export class ProjectsService {
         name,
         sector,
         slug,
+        userId,
       },
     });
   }
