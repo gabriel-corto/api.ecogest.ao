@@ -19,10 +19,23 @@ export class AuthController {
   async signIn(@Body() body: SignInDto, @Res() res: Response) {
     const { user } = await this.authService.signIn(body);
 
+    const userResponse = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      nif: user.nif,
+      isIdentityVerified: user.isIdentityVerified,
+      isEmailVerified: user.isEmailVerified,
+      role: user.role,
+      status: user.status,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+
     await this.authService.setAuthToken(res, user);
 
     return res.json({
-      data: user,
+      data: userResponse,
       message: 'AUTHORIZED',
     });
   }
@@ -61,13 +74,13 @@ export class AuthController {
 
   @Post('/verify-email')
   async verifyUserEmail(
-    @Body() data: VerifyEmailDto,
+    @Body() body: VerifyEmailDto,
     @Req() req: AuthRequest,
   ): Promise<ApiSuccessResponse> {
     const { userId } = req.user;
 
     const { user } = await this.authService.verifyUserEmail({
-      otp: data.otp,
+      otp: body.otp,
       userId,
     });
 

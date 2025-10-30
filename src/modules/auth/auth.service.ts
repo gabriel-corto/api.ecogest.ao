@@ -22,11 +22,11 @@ import type { Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-    private prisma: PrismaService,
-    private mailService: MailService,
     private docs: DocsService,
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+    private mailService: MailService,
+    private usersService: UsersService,
   ) {}
 
   private async hashPassword(password: string) {
@@ -62,7 +62,7 @@ export class AuthService {
     });
   }
 
-  async signIn(data: SignInDto): Promise<ApiAuthResponse> {
+  async signIn(data: SignInDto) {
     const { email, password } = data;
     const user = await this.usersService.findUserByEmail(email);
 

@@ -72,6 +72,16 @@ model Otp {
   @@map("otp")
 }
 
+model Project {
+  id        String     @id @default(uuid())
+  name      String
+  sector    SectorEnum
+  slug      String     @unique
+  locale    String
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @default(now()) @map("updated_at")
+}
+
 enum entityTypeEnum {
   COMPANY
   SINGULAR
@@ -101,4 +111,11 @@ enum StatusEnum {
   REJECTED
   CANCELLED
   VERIFIED
+}
+
+enum SectorEnum {
+  AGRICULTURE
+  BUIDING
+  EDUCATION
+  ENGINEERNING
 }
